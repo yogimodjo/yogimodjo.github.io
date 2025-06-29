@@ -204,21 +204,35 @@
         </div>
         <div class="row justify-content-center">
           <div class="col-md-8">
-            <div class="mb-3">
-              <label for="exampleFormControlInput1" class="form-label">Nama Lengkap & Nama Perusahaan</label>
-              <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Ibu/Bapak & Nama PT/CV" />
+            <div class="alert alert-success alert-dismissible fade show d-none my-alert" role="alert">
+              <strong>Pesan terkirim, </strong>kami akan segera menghubungi anda.
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-            <div class="mb-3">
-              <label for="exampleFormControlInput1" class="form-label">Alamat e-mail Anda</label>
-              <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com" />
-            </div>
-            <div class="mb-3">
-              <label for="exampleFormControlTextarea1" class="form-label">Example textarea</label>
-              <textarea class="form-control text-mute" id="exampleFormControlTextarea" rows="3">Contoh : Saya Tertarik, Mohon Hubungi Saya</textarea>
-            </div>
-            <div class="col-auto">
-              <button type="submit" class="btn btn-success mb-3">Kirim e-mail</button>
-            </div>
+            <form name="contact-form">
+              <div class="mb-1">
+                <label for="name" class="form-label mb-0">Nama Lengkap</label>
+                <input type="text" class="form-control" id="name" aria-describedby="name" name="nama" placeholder="Masukan Nama Anda" />
+              </div>
+              <div class="mb-1">
+                <label for="perusahaan" class="form-label mb-0">Nama Perusahaan</label>
+                <input type="text" class="form-control" id="name" aria-describedby="perusahaan" name="perusahaan" placeholder="PT. ... / CV. ..." />
+              </div>
+              <div class="mb-1">
+                <label for="email" class="form-label mb-0">Alamat e-mail Anda</label>
+                <input type="email" class="form-control" id="email" aria-describedby="email" name="email" placeholder="name@example.com" />
+              </div>
+              <div class="mb-1">
+                <label for="pesan" class="form-label mb-0">Silahkan isi pesan Anda</label>
+                <textarea class="form-control mb-3" id="pesan" rows="3" name="pesan" placeholder="Contoh : Saya Tertarik, Mohon Hubungi Saya"></textarea>
+              </div>
+              <div class="col-auto">
+                <button type="submit" class="btn btn-primary btn-kirim">Kirim</button>
+                <button class="btn btn-primary btn-loading d-none" type="button" disabled>
+                  <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                  <span role="status">Loading...</span>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
@@ -236,9 +250,35 @@
       <p class="mt-0">created with <i class="bi bi-heart-fill text-danger"></i> from RethaPrint @2025 |<a class="text-white fw-bold" href="mailto:suport@rethaprint.com"> support@rethaprint.com</a></p>
     </footer>
     <!-- end Footer -->
-    <!-- ####################################################################### -->
+
     <!-- JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
     <!-- end JS -->
+
+    <!-- contact form Google Script -->
+    <script>
+      const scriptURL = "https://script.google.com/macros/s/AKfycbxliKego6Y8Pz_pMHle4vQh9TpCPo4EAu-MLyUEX3TM2HQZhfAXOs3fsc1F8iQlbfOd/exec";
+      const form = document.forms["contact-form"];
+      const btnKirim = document.querySelector(".btn-kirim");
+      const btnLoading = document.querySelector(".btn-loading");
+      const myAlert = document.querySelector(".my-alert");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        btnLoading.classList.toggle("d-none");
+        btnKirim.classList.toggle("d-none");
+        fetch(scriptURL, { method: "POST", body: new FormData(form) })
+          .then((response) => {
+            console.log("Success!", response);
+            btnLoading.classList.toggle("d-none");
+            btnKirim.classList.toggle("d-none");
+            myAlert.classList.toggle("d-none");
+            form.reset();
+          })
+          .catch((error) => {
+            console.error("Error!", error.message);
+          });
+      });
+    </script>
   </body>
 </html>
